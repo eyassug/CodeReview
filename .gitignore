@@ -1,0 +1,11 @@
+CodeReview.Console/bin/
+_ReSharper.CodeReview/
+*.dll
+CodeReview/Server/obj/
+CodeReview.Console/obj/
+*.pdb
+CodeReview.Core/obj/
+CodeReview.Services.Tests/
+CodeReview.Services/bin/
+CodeReview.Services/obj/
+*.suo
