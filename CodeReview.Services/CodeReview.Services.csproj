@@ -63,6 +63,7 @@
     <Compile Include="CodeFile.cs" />
     <Compile Include="CSharpClass.cs" />
     <Compile Include="IClassComparerService.cs" />
+    <Compile Include="ICodeFileService.cs" />
     <Compile Include="IMethodComparerService.cs" />
     <Compile Include="Method.cs" />
     <Compile Include="MethodBody.cs" />
