@@ -25,6 +25,7 @@ namespace CodeReview.Console
         public ComparerViewModel()
         {
             _codeFileService = new CodeFileService();
+            _classComparerService = new ClassComparerService();
         }
 
 
@@ -35,12 +36,14 @@ namespace CodeReview.Console
         #endregion
 
         #region Methods
-        public void Compare()
+        public ClassComparisonResult Compare()
         {
             _baseCodeFile = _codeFileService.Create(File1);
             _refactoredCodeFile = _codeFileService.Create(File2);
-            var result = _classComparerService.Compare(_baseCodeFile.Classes.First(),
-                                                       _refactoredCodeFile.Classes.First());
+            var class1 = _baseCodeFile.Classes.First();
+            var class2 = _refactoredCodeFile.Classes.First();
+            var result = _classComparerService.Compare(class1,class2);
+            return result;
 
         }
 
