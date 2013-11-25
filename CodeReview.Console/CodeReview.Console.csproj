@@ -62,12 +62,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builder.cs" />
+    <Compile Include="ClassComparerService.cs" />
+    <Compile Include="CodeFileService.cs" />
+    <Compile Include="ComparerViewModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CodeReview.Core\CodeReview.Core.csproj">
+      <Project>{dd5b138d-0d91-4309-91bb-55e59c629cc9}</Project>
+      <Name>CodeReview.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CodeReview.Services\CodeReview.Services.csproj">
+      <Project>{6bc7cf6b-5573-43c7-80d1-dad73dfa6abc}</Project>
+      <Name>CodeReview.Services</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
