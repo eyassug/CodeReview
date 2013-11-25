@@ -26,7 +26,7 @@ namespace CodeReview.Services
             get
             {
                 return _classes ??
-                       (_classes = GetClasses(_syntaxTree.GetRoot().Members.OfType<ClassDeclarationSyntax>()));
+                       (_classes = GetClasses(_syntaxTree.GetRoot().Members));
             }
         }
 
@@ -34,9 +34,15 @@ namespace CodeReview.Services
         #endregion
 
         #region Static Helpers
-        private static ICollection<CSharpClass> GetClasses(IEnumerable<ClassDeclarationSyntax> classDeclarations)
+        private static ICollection<CSharpClass> GetClasses(IEnumerable<MemberDeclarationSyntax> memberDeclarations)
         {
-            return classDeclarations.Select(classDeclarationSyntax => new CSharpClass(classDeclarationSyntax)).ToList();
+            ICollection<ClassDeclarationSyntax> classDeclarations = new List<ClassDeclarationSyntax>();
+            var memberDeclarationSyntax = memberDeclarations as List<MemberDeclarationSyntax> ?? memberDeclarations.ToList();
+            if (memberDeclarationSyntax.OfType<NamespaceDeclarationSyntax>().Any())
+                classDeclarations = memberDeclarationSyntax.OfType<NamespaceDeclarationSyntax>().First().Members.OfType<ClassDeclarationSyntax>().ToList();
+            if (classDeclarations != null)
+                return classDeclarations.Select(classDeclarationSyntax => new CSharpClass(classDeclarationSyntax)).ToList();
+            return new List<CSharpClass>();
         }
 
         #endregion

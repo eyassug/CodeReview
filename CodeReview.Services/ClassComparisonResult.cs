@@ -26,7 +26,7 @@ namespace CodeReview.Services
 
         public bool HaveIdenticalVariables()
         {
-            
+            return true;
         }
 
         #endregion
