@@ -14,6 +14,8 @@ namespace CodeReview.Services
 
         public Method(MethodDeclarationSyntax methodDeclarationSyntax)
         {
+            if(methodDeclarationSyntax == null)
+                throw new ArgumentNullException("methodDeclarationSyntax");
             _methodDeclarationSyntax = methodDeclarationSyntax;
         }
 
@@ -23,7 +25,13 @@ namespace CodeReview.Services
         public string Name { get { return _methodDeclarationSyntax.Identifier.ToString(); } }
         public ICollection<ParameterSyntax> Parameters { get { return _methodDeclarationSyntax.ParameterList.Parameters.ToList(); } }
         public MethodBody Body { get { return _methodBody ?? (_methodBody = new MethodBody(_methodDeclarationSyntax.Body)); } }
-
+        public string ReturnType
+        {
+            get
+            {
+                return _methodDeclarationSyntax.ReturnType.ToString();
+            }
+        }
 
         #endregion
     }

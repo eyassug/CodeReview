@@ -10,13 +10,15 @@ namespace CodeReview.Services
 {
     public class CSharpClass
     {
-        private readonly ClassDeclarationSyntax _baseType;
+        private readonly ClassDeclarationSyntax _classDeclarationSyntax;
         private ICollection<Method> _methods; 
 
         #region Constructors
-        public CSharpClass(ClassDeclarationSyntax baseType)
+        public CSharpClass(ClassDeclarationSyntax classDeclarationSyntax)
         {
-            _baseType = baseType;
+            if(classDeclarationSyntax == null)
+                throw new ArgumentNullException("classDeclarationSyntax");
+            _classDeclarationSyntax = classDeclarationSyntax;
         }
 
         #endregion
@@ -24,8 +26,8 @@ namespace CodeReview.Services
 
         #region Properties
 
-        public string Name { get { return _baseType.Identifier.ToString(); } }
-        public string FullName { get { return _baseType.Identifier.ToFullString(); } }
+        public string Name { get { return _classDeclarationSyntax.Identifier.ToString(); } }
+        public string FullName { get { return _classDeclarationSyntax.Identifier.ToFullString(); } }
 
         public string Namespace
         {
@@ -38,12 +40,12 @@ namespace CodeReview.Services
 
         public ICollection<ConstructorDeclarationSyntax> Constructors
         {
-            get { return _baseType.Members.OfType<ConstructorDeclarationSyntax>().ToList(); }
+            get { return _classDeclarationSyntax.Members.OfType<ConstructorDeclarationSyntax>().ToList(); }
         } 
 
         public ICollection<Method> Methods
         {
-            get { return _methods ?? (_methods = GetMethods(_baseType.Members.OfType<MethodDeclarationSyntax>().ToList())); }
+            get { return _methods ?? (_methods = GetMethods(_classDeclarationSyntax.Members.OfType<MethodDeclarationSyntax>().ToList())); }
         }
 
 
