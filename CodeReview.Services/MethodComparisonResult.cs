@@ -11,6 +11,10 @@ namespace CodeReview.Services
 
         public MethodComparisonResult(Method baseMethod, Method refactoredMethod)
         {
+            if(baseMethod == null)
+                throw new ArgumentNullException("baseMethod");
+            if(refactoredMethod == null)
+                throw new ArgumentNullException("refactoredMethod");
             _baseMethod = baseMethod;
             _refactoredMethod = refactoredMethod;
         }
@@ -33,10 +37,14 @@ namespace CodeReview.Services
             return true;
         }
 
+        public bool AreIdentical()
+        {
+            return (HaveIdenticalParameters() && _baseMethod.ReturnType == _refactoredMethod.ReturnType);
+        }
         #endregion
 
         #region Properties
-
+        
 
 
         #endregion
