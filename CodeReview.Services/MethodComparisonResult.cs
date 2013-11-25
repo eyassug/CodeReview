@@ -23,12 +23,13 @@ namespace CodeReview.Services
 
         public ICollection<string> GetAddedLines()
         {
-
+            return _refactoredMethod.Body.Lines.Where(m => !_baseMethod.Body.Lines.Contains(m)).ToList();
         }
 
-        public bool HaveSimilarParameters()
+        public bool HaveIdenticalParameters()
         {
-            if()
+            if(_baseMethod.Parameters.Count != _refactoredMethod.Parameters.Count)
+                return false;
             return true;
         }
 
