@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ namespace CodeReview.Console
     {
         public CodeFile Create(string filePath)
         {
+            if(!File.Exists(filePath))
+                throw new FileNotFoundException(string.Format("The file '{0}' was not found!",filePath));
             return new CodeFile(SyntaxTree.ParseFile(filePath));
         }
     }
