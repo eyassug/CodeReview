@@ -11,7 +11,7 @@ namespace CodeReview.Services
     public class CSharpClass
     {
         private readonly ClassDeclarationSyntax _classDeclarationSyntax;
-        private ICollection<Method> _methods; 
+        private IList<Method> _methods; 
 
         #region Constructors
         public CSharpClass(ClassDeclarationSyntax classDeclarationSyntax)
@@ -43,7 +43,7 @@ namespace CodeReview.Services
             get { return _classDeclarationSyntax.Members.OfType<ConstructorDeclarationSyntax>().ToList(); }
         } 
 
-        public ICollection<Method> Methods
+        public IList<Method> Methods
         {
             get { return _methods ?? (_methods = GetMethods(_classDeclarationSyntax.Members.OfType<MethodDeclarationSyntax>().ToList())); }
         }
@@ -52,7 +52,7 @@ namespace CodeReview.Services
         #endregion
 
         #region Private Helper Methods
-        public static ICollection<Method> GetMethods(ICollection<MethodDeclarationSyntax> methodDeclarations)
+        public static IList<Method> GetMethods(ICollection<MethodDeclarationSyntax> methodDeclarations)
         {
             return methodDeclarations.Select(methodDeclaration => new Method(methodDeclaration)).ToList();
         }
