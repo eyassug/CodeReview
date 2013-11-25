@@ -14,8 +14,11 @@ namespace CodeReview.Console
         static void Main(string[] args)
         {
             var viewModel = new ComparerViewModel();
-            viewModel.File1 = @"E:\Code\CodeReview\CodeReview.Services\ClassComparisonResult.cs";
-            viewModel.File2 = @"E:\Code\CodeReview\CodeReview.Services\MethodComparisonResult.cs";
+            viewModel.File1 = @"C:\Users\Eyassu\Documents\CodeReviewTest\Comparison\BLL Legacy\Models\ItemUnit.cs";
+            viewModel.File2 = @"C:\Users\Eyassu\Documents\CodeReviewTest\Comparison\New\BLL\Models\ItemUnit.cs";
+            viewModel.QueriesDirectory =
+                @"C:\Users\Eyassu\Documents\CodeReviewTest\Comparison\New\Repository\HCMIS.Repository\Queries";
+            
             var result = viewModel.Compare();
             if (result.HaveIdenticalMethods())
                 System.Console.WriteLine("Have Identical Methods");
