@@ -30,6 +30,7 @@ namespace CodeReview.Services
             }
         }
 
+        public string Language { get { return _syntaxTree.GetRoot().Language; } }
         #endregion
 
         #region Static Helpers
