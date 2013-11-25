@@ -34,5 +34,9 @@ namespace CodeReview.Services
         }
 
         #endregion
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

@@ -57,5 +57,10 @@ namespace CodeReview.Services
             return methodDeclarations.Select(methodDeclaration => new Method(methodDeclaration)).ToList();
         }
         #endregion
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

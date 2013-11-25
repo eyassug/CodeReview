@@ -46,5 +46,14 @@ namespace CodeReview.Services
         }
 
         #endregion
+
+        #region Methods
+        public override string ToString()
+        {
+            return FileName;
+        }
+
+
+        #endregion
     }
 }
