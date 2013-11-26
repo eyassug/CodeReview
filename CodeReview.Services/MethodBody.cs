@@ -23,9 +23,24 @@ namespace CodeReview.Services
 
         IList<string> GetQueries()
         {
-            const string queryPattern = @"SELECT\s.*FROM\s.*";
+            string queryPattern = @"SELECT\s.*FROM\s.*";
             var  regExpression = new Regex ( queryPattern,RegexOptions.IgnoreCase | RegexOptions.Multiline );
-            var queryLines = (from line in Lines let match = regExpression.Match(line) where match.Success select line).ToList();
+            var queryLines = (from line in Lines let match = regExpression.Match(line.Trim().Replace('\n',' ')) where match.Success select line).ToList();
+            
+            if(queryLines.Count==0)
+            {
+                queryPattern = @"UPDATE\s.*SET\s.*";
+                regExpression = new Regex(queryPattern, RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                queryLines = (from line in Lines let match = regExpression.Match(line.Trim().Replace('\n', ' ')) where match.Success select line).ToList();
+            }
+
+            if (queryLines.Count == 0)
+            {
+                queryPattern = @"DELETE\s.*FROM\s.*";
+                regExpression = new Regex(queryPattern, RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                queryLines = (from line in Lines let match = regExpression.Match(line.Trim().Replace('\n', ' ')) where match.Success select line).ToList();
+            }
+
             var queries = queryLines.Select(queryLine => queryLine.Split('\"').ToList()).Select(buildingBlocks => buildingBlocks[1].Trim()).ToList();
             return queries.ToList();
         }

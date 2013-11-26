@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="ClassComparisonResult.cs" />
     <Compile Include="CodeFile.cs" />
+    <Compile Include="CodeDirectory.cs" />
     <Compile Include="CSharpClass.cs" />
     <Compile Include="IClassComparerService.cs" />
     <Compile Include="ICodeFileService.cs" />

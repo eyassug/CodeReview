@@ -42,40 +42,71 @@ namespace CodeReview.Console
         {
             _baseCodeFile = _codeFileService.Create(File1);
             _refactoredCodeFile = _codeFileService.Create(File2);
+
+            if (_baseCodeFile.Classes.Count == 0)
+                return null;
+
             var class1 = _baseCodeFile.Classes.First();
             var class2 = _refactoredCodeFile.Classes.First();
-            var method1 = class1.Methods.First();
-            var method2 = class2.Methods.First(m => m.Name == method1.Name);
+            var result = _classComparerService.Compare(class1, class2);
             
-            // Get query from method1
-            
-            // Get added lines from method1 (methodComparisonResult)
-            // Browse to code in added line
-
-            var queries = method1.Body.Queries.First();
-            var queries2 = method2.Body.Queries;
-            
-
-            var result = _classComparerService.Compare(class1,class2);
             foreach (var methodComparisonResult in result.MethodComparisonResults)
             {
+                if (methodComparisonResult.BaseMethod.Body.Queries.Count == 0)
+                    continue; //For now let's just pass this, we will need to show it later though.
+                
                 var removedLines = methodComparisonResult.GetRemovedLines();
                 var addedLines = methodComparisonResult.GetAddedLines();
-                var queryLine = addedLines.First(m => m.Contains("HCMIS.Repository.Queries"));
-                
-                var className = queryLine.Split('.')[queryLine.Split('.').Length - 2];
-                var queryFilePath = Path.Combine(QueriesDirectory, className+".cs");
-                _queryCodeFile = _codeFileService.Create(queryFilePath);
-                var queryClass = _queryCodeFile.Classes.First();
-                var method = queryClass.Methods.First(m => m.Name == queryLine.Split('.')[queryLine.Split('.').Length - 1].Split('(')[0]);
-                var refactoredQuery = method.Body.Queries.First();
-                if(refactoredQuery.Equals(queries))
+                string outputResult = "";
+                if (addedLines.Count == 0)
                 {
-                    var comparisonResult = "Are equal";
+                    outputResult = string.Format("SAME: {0} \n", methodComparisonResult.BaseMethod.Name);
                 }
-            }
-            return result;
+                else
+                {
 
+                    var queryLine = addedLines.First(m => m.Contains("HCMIS.Repository.Queries"));
+                    var queryLineShortened = queryLine.Remove(0, queryLine.IndexOf("HCMIS.Repository.Queries"));
+                    var queryWithoutParam = queryLineShortened.Trim().Split('(')[0];
+                    //LoadFromRawSQL and the query on the same line.
+
+                    var className = queryWithoutParam.Split('.')[queryWithoutParam.Split('.').Length - 2];
+                    var queryFilePath = Path.Combine(QueriesDirectory, className + ".cs");
+                    _queryCodeFile = _codeFileService.Create(queryFilePath);
+                    var queryClass = _queryCodeFile.Classes.First();
+                    var method =
+                        queryClass.Methods.First(
+                            m => m.Name == queryWithoutParam.Split('.')[queryWithoutParam.Split('.').Length - 1]);
+                    var refactoredQuery = method.Body.Queries.First();
+
+
+                    string successResult =
+                        refactoredQuery.Equals(methodComparisonResult.BaseMethod.Body.Queries.First())? "SUCCESS": "ERROR";
+
+                    outputResult = string.Format("{2}: Class {0} Method {1} \n", className, method, successResult);
+                }
+
+                var stream = _outputFile.AppendText();
+                stream.Write(outputResult);
+                stream.Close();
+
+            }
+
+            return result;
+        }
+
+        public void CompareDirectories()
+        {
+            _outputFile = new FileInfo(Path.Combine(OutputDirectory.FullName, "ComparisonResult.txt"));
+            
+
+            foreach (var csFile in DirectoryOriginal.CSharpFiles)
+            {
+                File1 = csFile.FullName;
+                //The following is dirty hack.  Should be better.  Basically we're manually mapping the files between the two BLLs
+                File2 = File1.Replace("BLL Legacy", @"New\BLL");
+                Compare();
+            }
         }
 
         public bool CanCompare()
@@ -116,5 +147,14 @@ namespace CodeReview.Console
 
 
         public string QueriesDirectory { get; set; }
+
+        public string RefactorDirectory { get; set; }
+
+        public CodeDirectory DirectoryOriginal { get; set; }
+
+        public DirectoryInfo OutputDirectory { get; set; }
+
+        private FileInfo _outputFile;
+
     }
 }

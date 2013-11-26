@@ -20,6 +20,7 @@ namespace CodeReview.Services
         }
 
         #region Methods
+        
         public ICollection<string> GetRemovedLines()
         {
             return _baseMethod.Body.Lines.Where(m => !_refactoredMethod.Body.Lines.Contains(m)).ToList();
@@ -44,7 +45,9 @@ namespace CodeReview.Services
         #endregion
 
         #region Properties
-        
+
+        public Method BaseMethod { get { return _baseMethod; } }
+        public Method RefactoredMethod { get { return _refactoredMethod; } }
 
 
         #endregion
