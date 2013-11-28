@@ -62,6 +62,11 @@
     <Compile Include="ClassComparisonResult.cs" />
     <Compile Include="CodeFile.cs" />
     <Compile Include="CodeDirectory.cs" />
+    <Compile Include="Comparison\MethodComparisonResultBase.cs" />
+    <Compile Include="Comparison\MethodNotChanged.cs" />
+    <Compile Include="Comparison\MethodRefactorError.cs" />
+    <Compile Include="Comparison\MethodRefactorSuccess.cs" />
+    <Compile Include="Comparison\OtherError.cs" />
     <Compile Include="CSharpClass.cs" />
     <Compile Include="IClassComparerService.cs" />
     <Compile Include="ICodeFileService.cs" />
