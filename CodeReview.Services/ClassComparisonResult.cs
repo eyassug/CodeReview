@@ -38,7 +38,19 @@ namespace CodeReview.Services
 
             foreach (var method in _baseClass.Methods.Where(m => _refactoredClass.Methods.Select(r => r.Name).Contains(m.Name)))
             {
-                var copyMethod = _refactoredClass.Methods.First(m => m.Name == method.Name);
+                Method copyMethod = null;
+                var overloads = _refactoredClass.Methods.Where(m => m.Name == method.Name).ToList();
+                var originalParameterSet = method.Parameters.Aggregate("", (current, parameter) => current + parameter.Type);
+                foreach (var overload in overloads)
+                {
+                    string typeString = overload.Parameters.Aggregate("", (current, parameter) => current + parameter.Type.ToString());
+                    if (typeString == originalParameterSet)
+                        copyMethod = overload;
+                }
+                if (copyMethod == null)
+                {
+                    throw new Exception();
+                }
                 _methodComparisonResults.Add(new MethodComparisonResult(method, copyMethod));
             }
         }

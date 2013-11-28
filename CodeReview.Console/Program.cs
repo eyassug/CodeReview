@@ -16,10 +16,10 @@ namespace CodeReview.Console
         {
             var viewModel = new ComparerViewModel();
 
-            viewModel.DirectoryOriginal = new CodeDirectory(@"C:\Users\henok\Desktop\Comparison\BLL Legacy");
-            viewModel.RefactorDirectory = @"C:\Users\henok\Desktop\Comparison\New\BLL";
-            viewModel.QueriesDirectory = @"C:\Users\henok\Desktop\Comparison\New\Repository\HCMIS.Repository\Queries";
-            viewModel.OutputDirectory = new DirectoryInfo(@"C:\Users\henok\Desktop\Comparison");
+            viewModel.DirectoryOriginal = new CodeDirectory(@"C:\Users\Eyassu\Documents\CodeReviewTest\Comparison\BLL Legacy");
+            viewModel.RefactorDirectory = @"C:\Users\Eyassu\Documents\CodeReviewTest\Comparison\New\BLL";
+            viewModel.QueriesDirectory = @"C:\Users\Eyassu\Documents\CodeReviewTest\Comparison\New\Repository\HCMIS.Repository\Queries";
+            viewModel.OutputDirectory = new DirectoryInfo(@"C:\Users\Eyassu\Documents\CodeReviewTest\Comparison");
 
             viewModel.CompareDirectories();
             

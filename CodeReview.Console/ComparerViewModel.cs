@@ -64,26 +64,39 @@ namespace CodeReview.Console
                 }
                 else
                 {
+                    try
+                    {
+                        var queryLine = addedLines.FirstOrDefault(m => m.Contains("HCMIS.Repository.Queries"));
+                        if(queryLine == null)
+                        {
+                            throw new Exception();
+                            outputResult = string.Format("{2}: Class {0} Method {1} \n", _baseCodeFile.Classes.First().Name, methodComparisonResult.BaseMethod.Name, "ERROR - Not Refactored");
+                        }
+                        var queryLineShortened = queryLine.Remove(0, queryLine.IndexOf("HCMIS.Repository.Queries"));
+                        var queryWithoutParam = queryLineShortened.Trim().Split('(')[0];
+                        //LoadFromRawSQL and the query on the same line.
 
-                    var queryLine = addedLines.First(m => m.Contains("HCMIS.Repository.Queries"));
-                    var queryLineShortened = queryLine.Remove(0, queryLine.IndexOf("HCMIS.Repository.Queries"));
-                    var queryWithoutParam = queryLineShortened.Trim().Split('(')[0];
-                    //LoadFromRawSQL and the query on the same line.
-
-                    var className = queryWithoutParam.Split('.')[queryWithoutParam.Split('.').Length - 2];
-                    var queryFilePath = Path.Combine(QueriesDirectory, className + ".cs");
-                    _queryCodeFile = _codeFileService.Create(queryFilePath);
-                    var queryClass = _queryCodeFile.Classes.First();
-                    var method =
-                        queryClass.Methods.First(
-                            m => m.Name == queryWithoutParam.Split('.')[queryWithoutParam.Split('.').Length - 1]);
-                    var refactoredQuery = method.Body.Queries.First();
+                        var className = queryWithoutParam.Split('.')[queryWithoutParam.Split('.').Length - 2];
+                        var queryFilePath = Path.Combine(QueriesDirectory, className + ".cs");
+                        _queryCodeFile = _codeFileService.Create(queryFilePath);
+                        var queryClass = _queryCodeFile.Classes.First();
+                        var method =
+                            queryClass.Methods.First(
+                                m => m.Name == queryWithoutParam.Split('.')[queryWithoutParam.Split('.').Length - 1]);
+                        var refactoredQuery = method.Body.Queries.First();
 
 
-                    string successResult =
-                        refactoredQuery.Equals(methodComparisonResult.BaseMethod.Body.Queries.First())? "SUCCESS": "ERROR";
+                        string successResult =
+                            refactoredQuery.Equals(methodComparisonResult.BaseMethod.Body.Queries.First()) ? "SUCCESS" : "ERROR";
 
-                    outputResult = string.Format("{2}: Class {0} Method {1} \n", className, method, successResult);
+                        outputResult = string.Format("{2}: Class {0} Method {1} \n", className, method, successResult);
+                    }
+                    catch (Exception)
+                    {
+
+                        outputResult = string.Format("{2}: Class {0} Method {1} \n", _baseCodeFile.Classes.First().Name, methodComparisonResult.BaseMethod.Name, "ERROR - Not Refactored");
+                    }
+                    
                 }
 
                 var stream = _outputFile.AppendText();
