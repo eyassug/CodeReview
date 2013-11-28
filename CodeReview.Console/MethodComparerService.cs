@@ -12,7 +12,11 @@ namespace CodeReview.Console
     {
         public MethodComparisonResultBase Compare(Method baseMethod, Method queryMethod)
         {
-            throw new NotImplementedException();
+            var baseMethodQueryString = GetQueryString(baseMethod.Body).Trim();
+            var queryMethodQueryString = GetQueryString(queryMethod.Body).Trim();
+            if(baseMethodQueryString == queryMethodQueryString)
+                return new MethodRefactorSuccess();
+            return new MethodRefactorError();
         }
 
         public Method FindMatchingOverload(Method method, IList<Method> methodCollection)
@@ -36,5 +40,13 @@ namespace CodeReview.Console
         {
             throw new NotImplementedException();
         }
+
+        #region Private Helper Methods
+
+        static string GetQueryString(MethodBody methodBody)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
     }
 }
