@@ -8,9 +8,17 @@ namespace CodeReview.Services.Comparison
 {
     public class MethodRefactorError : MethodComparisonResultBase
     {
-        public string ErrorDescription { get; set; }
+        public MethodRefactorError()
+            : base("Refactor error")
+        {
+            
+        }
 
-        public Method RefactoredMethod { get; set; }
-        public Method QueryMethod { get; set; }
+        public MethodRefactorError(Method baseMethod, Method queryMethod)
+        {
+            QueryMethod = queryMethod;
+            BaseMethod = baseMethod;
+        }
+        public Method QueryMethod { get; private set; }
     }
 }

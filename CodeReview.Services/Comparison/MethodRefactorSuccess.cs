@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CodeReview.Services.Comparison
 {
-    class MethodRefactorSuccess : MethodComparisonResultBase
+    public class MethodRefactorSuccess : MethodComparisonResultBase
     {
         public MethodRefactorSuccess() : base("Successful!")
         {
