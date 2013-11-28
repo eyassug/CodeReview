@@ -8,8 +8,7 @@ namespace CodeReview.Services.Comparison
 {
     public abstract class MethodComparisonResultBase
     {
-        private readonly Method _baseMethod;
-
+        
         protected MethodComparisonResultBase()
         {
             
@@ -22,14 +21,12 @@ namespace CodeReview.Services.Comparison
 
         protected MethodComparisonResultBase(Method baseMethod, string result) :this(result)
         {
-            _baseMethod = baseMethod;
+            BaseMethod = baseMethod;
         }
 
         #region Methods
-        public Method BaseMethod
-        {
-            get { return _baseMethod; }
-        }
+
+        public Method BaseMethod { get; protected set; }
 
         #endregion
 
