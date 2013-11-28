@@ -10,7 +10,7 @@ namespace CodeReview.Console
 {
     class MethodComparerService : IMethodComparerService
     {
-        public MethodComparisonResultBase Compare(Method baseMethod, Method refactoredMethod)
+        public MethodComparisonResultBase Compare(Method baseMethod, Method queryMethod)
         {
             throw new NotImplementedException();
         }
