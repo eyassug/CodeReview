@@ -65,12 +65,13 @@ namespace CodeReview.Console
         }
 
         #region Private Helper Methods
-        Method GetQueryMethod(CSharpClass queryClass, string queryMethodCallLine)
+
+        static Method GetQueryMethod(CSharpClass queryClass, string queryMethodCallLine)
         {
             throw new NotImplementedException();
         }
 
-        CSharpClass GetQueryClass(string queryMethodCallLine)
+        static CSharpClass GetQueryClass(string queryMethodCallLine)
         {
             throw new NotImplementedException();
         }
