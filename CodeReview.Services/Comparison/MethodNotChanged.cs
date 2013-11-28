@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CodeReview.Services.Comparison
 {
-    public class MethodNotChanged : MethodComparisonResultBase
+    public class MethodNotChanged : MethodNotRefacored
     {
         public MethodNotChanged() : base("Method Not Changed!")
         {

@@ -64,6 +64,7 @@
     <Compile Include="CodeDirectory.cs" />
     <Compile Include="Comparison\MethodComparisonResultBase.cs" />
     <Compile Include="Comparison\MethodNotChanged.cs" />
+    <Compile Include="Comparison\MethodNotRefacored.cs" />
     <Compile Include="Comparison\MethodRefactorError.cs" />
     <Compile Include="Comparison\MethodRefactorSuccess.cs" />
     <Compile Include="Comparison\OtherError.cs" />
