@@ -65,8 +65,11 @@
     <Compile Include="ClassComparerService.cs" />
     <Compile Include="CodeFileService.cs" />
     <Compile Include="ComparerViewModel.cs" />
+    <Compile Include="MethodComparerService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\ClassComparisonViewModel.cs" />
+    <Compile Include="ViewModels\MethodComparisonViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
