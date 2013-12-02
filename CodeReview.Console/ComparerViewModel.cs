@@ -55,8 +55,8 @@ namespace CodeReview.Console
                 if (methodComparisonResult.BaseMethod.Body.Queries.Count == 0)
                     continue; //For now let's just pass this, we will need to show it later though.
                 
-                var removedLines = methodComparisonResult.GetRemovedLines();
-                var addedLines = methodComparisonResult.GetAddedLines();
+                //var removedLines = methodComparisonResult.GetRemovedLines();
+                //var addedLines = methodComparisonResult.GetAddedLines();
                 string outputResult = "";
                 if (addedLines.Count == 0)
                 {
