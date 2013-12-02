@@ -10,5 +10,6 @@ namespace CodeReview.Services
     {
         ClassComparisonResult Compare(CSharpClass baseClass, CSharpClass refactoredClass,
                                       string refactoredQueryDirectoryPath);
+
     }
 }

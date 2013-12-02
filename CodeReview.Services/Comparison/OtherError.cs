@@ -8,7 +8,7 @@ namespace CodeReview.Services.Comparison
 {
     public class OtherError : MethodComparisonResultBase
     {
-        public OtherError(string result) : base(result)
+        public OtherError(Method baseMethod, string result) : base(baseMethod, result)
         {
             
         }

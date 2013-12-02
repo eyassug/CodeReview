@@ -8,7 +8,8 @@ namespace CodeReview.Services.Comparison
 {
     public class MethodNotChanged : MethodNotRefacored
     {
-        public MethodNotChanged() : base("Method Not Changed!")
+        public MethodNotChanged(Method baseMethod)
+            : base(baseMethod, "Method Not Changed!")
         {
             
         }

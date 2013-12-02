@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CodeReview.Console.ViewModels;
 using CodeReview.Services;
+using CodeReview.Services.Comparison;
 
 namespace CodeReview.Console
 {
@@ -112,7 +113,7 @@ namespace CodeReview.Console
         public void CompareDirectories()
         {
             _outputFile = new FileInfo(Path.Combine(OutputDirectory.FullName, "ComparisonResult.txt"));
-            
+            var errCount = 0;
 
             foreach (var csFile in DirectoryOriginal.CSharpFiles)
             {
@@ -139,11 +140,17 @@ namespace CodeReview.Console
 
                 foreach (var methodComparisonResultBase in methodComparisonResults)
                 {
-                    var stream = _outputFile.AppendText();
-                    var message = string.Format("{0} Result: {1} \n", methodComparisonResultBase.BaseMethod.Name,
-                                                methodComparisonResultBase.Result); 
-                    stream.Write(message);
-                    stream.Close();
+                    if (methodComparisonResultBase is MethodRefactorError || methodComparisonResultBase is OtherError)
+                    {
+                        errCount++;
+                        var stream = _outputFile.AppendText();
+                        var message = string.Format("{0}. {1} - {2} Result: {3} \n \n", errCount, csFile.FullName,
+                                                    methodComparisonResultBase.BaseMethod.Name,
+                                                    methodComparisonResultBase.Result);
+
+                        stream.Write(message);
+                        stream.Close();
+                    }
                 }
             }
         }

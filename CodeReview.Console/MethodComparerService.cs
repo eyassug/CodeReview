@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CodeReview.Services;
 using CodeReview.Services.Comparison;
@@ -16,14 +17,16 @@ namespace CodeReview.Console
             var queryMethodQueryString = GetQueryString(queryMethod.Body);
             if (baseMethodQueryString != null && queryMethodQueryString != null)
             {
-                if (baseMethodQueryString.Trim() == queryMethodQueryString.Trim())
-                    return new MethodRefactorSuccess();
+                var baseWithoutWhitspace = Regex.Replace(baseMethodQueryString,@"\s", "");
+                var queryMethodWithoutWhitespace = Regex.Replace(queryMethodQueryString, @"\s", "");
+                if (baseWithoutWhitspace.Equals(queryMethodWithoutWhitespace))
+                    return new MethodRefactorSuccess(baseMethod);
             }
 
-            return new MethodRefactorError();
+            return new MethodRefactorError(baseMethod);
         }
 
-        public Method FindMatchingOverload(Method method, IList<Method> methodCollection)
+        public Method FindMatchingOverload(Method method, IEnumerable<Method> methodCollection)
         {
             var originalParameterSet = method.Parameters.Aggregate("", (current, parameter) => current + parameter.Type);
             foreach (var methodOverload in methodCollection)

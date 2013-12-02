@@ -8,14 +8,14 @@ namespace CodeReview.Services.Comparison
 {
     public class MethodNotRefacored : MethodComparisonResultBase
     {
-        public MethodNotRefacored()
-            : base("Method Not Changed!")
+        public MethodNotRefacored(Method baseMethod)
+            : base(baseMethod, "Method Not Changed!")
         {
             
         }
 
-        public MethodNotRefacored(string result)
-            : base(result)
+        public MethodNotRefacored(Method baseMethod, string result)
+            : base(baseMethod, result)
         {
             
         }

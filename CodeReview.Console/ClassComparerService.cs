@@ -26,7 +26,9 @@ namespace CodeReview.Console
             
             foreach (var baseMethod in baseClass.Methods)
             {
-                var matchingMethod = _methodComparer.FindMatchingOverload(baseMethod, refactoredClass.Methods);
+                var matchingMethod = _methodComparer.FindMatchingOverload(baseMethod,
+                                                                          refactoredClass.Methods.Where(
+                                                                              m => m.Name == baseMethod.Name));
                 if (matchingMethod!=null)
                 {
                     var addedLines = _methodComparer.GetAddedLines(baseMethod, matchingMethod);
@@ -34,21 +36,24 @@ namespace CodeReview.Console
                     if(addedLines.Any(m => m.Contains("HCMIS.Repository.Queries")))
                     {
                         // Works for only one query per method. 
-                        var queryMethodCallLine = addedLines.First(m => m.Contains("HCMIS.Repository.Queries"));
-                        var queryClass = GetQueryClass(queryMethodCallLine, refactoredQueryDirectoryPath);
-                        var queryMethod = GetQueryMethod(queryClass, queryMethodCallLine);
-                        var result = _methodComparer.Compare(baseMethod, queryMethod);
-                        comparisonResult.MethodComparisonResults.Add(result);
+                        var queries = addedLines.Where(m => m.Contains("HCMIS.Repository.Queries"));
+                        foreach (var query in queries)
+                        {
+                            var queryClass = GetQueryClass(query, refactoredQueryDirectoryPath);
+                            var queryMethod = GetQueryMethod(queryClass, query);
+                            var result = _methodComparer.Compare(baseMethod, queryMethod);
+                            comparisonResult.MethodComparisonResults.Add(result);
+                        }
                     }
                     else
                     {
                         if(addedLines.Count == 0 && removedLines.Count == 0)
                         {
-                            comparisonResult.MethodComparisonResults.Add(new MethodNotChanged());
+                            comparisonResult.MethodComparisonResults.Add(new MethodNotChanged(baseMethod));
                         }
                         else
                         {
-                            comparisonResult.MethodComparisonResults.Add(new MethodNotRefacored());
+                            comparisonResult.MethodComparisonResults.Add(new MethodNotRefacored(baseMethod));
                         }
 
                     }
@@ -57,7 +62,7 @@ namespace CodeReview.Console
                 else
                 {
                     comparisonResult.MethodComparisonResults.Add(
-                        new OtherError("Matching method not found in Refactored class"));
+                        new OtherError(baseMethod, "Matching method not found in Refactored class"));
                 }
                 
             }
@@ -70,8 +75,14 @@ namespace CodeReview.Console
         static Method GetQueryMethod(CSharpClass queryClass, string queryMethodCallLine)
         {
             var queryLineShortened = queryMethodCallLine.Remove(0, queryMethodCallLine.IndexOf("HCMIS.Repository.Queries"));
-            var queryWithoutParam = queryLineShortened.Trim().Split('(')[0];
-            var method = queryClass.Methods.First(m => m.Name == queryWithoutParam.Split('.')[queryWithoutParam.Split('.').Length - 1]);
+            var endOfQueryMethodCall =queryLineShortened.IndexOf(")");
+            var queryLineCleanedUp = queryLineShortened.Remove(endOfQueryMethodCall + 1, queryLineShortened.Length-endOfQueryMethodCall-1);
+            var queryLineWithParamSplit = queryLineCleanedUp.Trim().Split('(');
+            var queryWithoutParam = queryLineWithParamSplit[0];
+            var queryMethodName = queryWithoutParam.Split('.')[queryWithoutParam.Split('.').Length - 1];
+            var parameters = queryLineWithParamSplit[1].Split(',');
+            var queryMethodParamCount = parameters.Length - (parameters.Length > 1?0:(parameters[0].Length<=1?1:0));
+            var method = queryClass.Methods.First(m => m.Name == queryMethodName && (m.Parameters != null && m.Parameters.Count == queryMethodParamCount));
             return method;
         }
 
