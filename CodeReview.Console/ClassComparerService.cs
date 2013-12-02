@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace CodeReview.Console
             _codeFileService = new CodeFileService();
         }
 
-        public ClassComparisonResult Compare(CSharpClass baseClass, CSharpClass refactoredClass)
+        public ClassComparisonResult Compare(CSharpClass baseClass, CSharpClass refactoredClass, string refactoredQueryDirectoryPath)
         {
             var comparisonResult = new ClassComparisonResult(baseClass,refactoredClass);
             
@@ -34,7 +35,7 @@ namespace CodeReview.Console
                     {
                         // Works for only one query per method. 
                         var queryMethodCallLine = addedLines.First(m => m.Contains("HCMIS.Repository.Queries"));
-                        var queryClass = GetQueryClass(queryMethodCallLine);
+                        var queryClass = GetQueryClass(queryMethodCallLine, refactoredQueryDirectoryPath);
                         var queryMethod = GetQueryMethod(queryClass, queryMethodCallLine);
                         var result = _methodComparer.Compare(baseMethod, queryMethod);
                         comparisonResult.MethodComparisonResults.Add(result);
@@ -68,13 +69,24 @@ namespace CodeReview.Console
 
         static Method GetQueryMethod(CSharpClass queryClass, string queryMethodCallLine)
         {
-            throw new NotImplementedException();
+            var queryLineShortened = queryMethodCallLine.Remove(0, queryMethodCallLine.IndexOf("HCMIS.Repository.Queries"));
+            var queryWithoutParam = queryLineShortened.Trim().Split('(')[0];
+            var method = queryClass.Methods.First(m => m.Name == queryWithoutParam.Split('.')[queryWithoutParam.Split('.').Length - 1]);
+            return method;
         }
 
-        static CSharpClass GetQueryClass(string queryMethodCallLine)
+        static CSharpClass GetQueryClass(string queryMethodCallLine, string refactoredQueryDirectoryPath)
         {
-            throw new NotImplementedException();
+            var queryLineShortened = queryMethodCallLine.Remove(0, queryMethodCallLine.IndexOf("HCMIS.Repository.Queries"));
+            var queryWithoutParam = queryLineShortened.Trim().Split('(')[0];
+            
+            var className = queryWithoutParam.Split('.')[queryWithoutParam.Split('.').Length - 2];
+            var queryFilePath = Path.Combine(refactoredQueryDirectoryPath, className + ".cs");
+            var queryCodeFile = new CodeFileService();
+            var queryClass = queryCodeFile.Create(queryFilePath).Classes.First();
+            return queryClass;
         }
+
         #endregion
 
 

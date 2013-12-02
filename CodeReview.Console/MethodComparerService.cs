@@ -12,10 +12,14 @@ namespace CodeReview.Console
     {
         public MethodComparisonResultBase Compare(Method baseMethod, Method queryMethod)
         {
-            var baseMethodQueryString = GetQueryString(baseMethod.Body).Trim();
-            var queryMethodQueryString = GetQueryString(queryMethod.Body).Trim();
-            if(baseMethodQueryString == queryMethodQueryString)
-                return new MethodRefactorSuccess();
+            var baseMethodQueryString = GetQueryString(baseMethod.Body);
+            var queryMethodQueryString = GetQueryString(queryMethod.Body);
+            if (baseMethodQueryString != null && queryMethodQueryString != null)
+            {
+                if (baseMethodQueryString.Trim() == queryMethodQueryString.Trim())
+                    return new MethodRefactorSuccess();
+            }
+
             return new MethodRefactorError();
         }
 
@@ -33,19 +37,19 @@ namespace CodeReview.Console
 
         public IList<string> GetRemovedLines(Method baseMethod, Method refactoredMethod)
         {
-            throw new NotImplementedException();
+            return baseMethod.Body.Lines.Where(m => !refactoredMethod.Body.Lines.Contains(m)).ToList();
         }
 
         public IList<string> GetAddedLines(Method baseMethod, Method refactoredMethod)
         {
-            throw new NotImplementedException();
+            return refactoredMethod.Body.Lines.Where(m => !baseMethod.Body.Lines.Contains(m)).ToList();
         }
 
         #region Private Helper Methods
 
         static string GetQueryString(MethodBody methodBody)
         {
-            throw new NotImplementedException();
+            return methodBody.Queries.FirstOrDefault();
         }
         #endregion
     }
