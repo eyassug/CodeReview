@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CodeReview.Console.ViewModels;
 using CodeReview.Services;
+using CodeReview.Services.Comparison;
 
 namespace CodeReview.Console
 {
@@ -40,85 +42,116 @@ namespace CodeReview.Console
         #region Methods
         public ClassComparisonResult Compare()
         {
-            _baseCodeFile = _codeFileService.Create(File1);
-            _refactoredCodeFile = _codeFileService.Create(File2);
+            //_baseCodeFile = _codeFileService.Create(File1);
+            //_refactoredCodeFile = _codeFileService.Create(File2);
 
-            if (_baseCodeFile.Classes.Count == 0)
-                return null;
+            //if (_baseCodeFile.Classes.Count == 0)
+            //    return null;
 
-            var class1 = _baseCodeFile.Classes.First();
-            var class2 = _refactoredCodeFile.Classes.First();
-            var result = _classComparerService.Compare(class1, class2);
+            //var class1 = _baseCodeFile.Classes.First();
+            //var class2 = _refactoredCodeFile.Classes.First();
+            //var result = _classComparerService.Compare(class1, class2);
             
-            foreach (var methodComparisonResult in result.MethodComparisonResults)
-            {
-                if (methodComparisonResult.BaseMethod.Body.Queries.Count == 0)
-                    continue; //For now let's just pass this, we will need to show it later though.
+            //foreach (var methodComparisonResult in result.MethodComparisonResults)
+            //{
+            //    if (methodComparisonResult.BaseMethod.Body.Queries.Count == 0)
+            //        continue; //For now let's just pass this, we will need to show it later though.
                 
-                //var removedLines = methodComparisonResult.GetRemovedLines();
-                //var addedLines = methodComparisonResult.GetAddedLines();
-                string outputResult = "";
-                if (addedLines.Count == 0)
-                {
-                    outputResult = string.Format("SAME: {0} \n", methodComparisonResult.BaseMethod.Name);
-                }
-                else
-                {
-                    try
-                    {
-                        var queryLine = addedLines.FirstOrDefault(m => m.Contains("HCMIS.Repository.Queries"));
-                        if(queryLine == null)
-                        {
-                            throw new Exception();
-                            outputResult = string.Format("{2}: Class {0} Method {1} \n", _baseCodeFile.Classes.First().Name, methodComparisonResult.BaseMethod.Name, "ERROR - Not Refactored");
-                        }
-                        var queryLineShortened = queryLine.Remove(0, queryLine.IndexOf("HCMIS.Repository.Queries"));
-                        var queryWithoutParam = queryLineShortened.Trim().Split('(')[0];
-                        //LoadFromRawSQL and the query on the same line.
+            //    var removedLines = methodComparisonResult.GetRemovedLines();
+            //    var addedLines = methodComparisonResult.GetAddedLines();
+            //    string outputResult = "";
+            //    if (addedLines.Count == 0)
+            //    {
+            //        outputResult = string.Format("SAME: {0} \n", methodComparisonResult.BaseMethod.Name);
+            //    }
+            //    else
+            //    {
+            //        try
+            //        {
+            //            var queryLine = addedLines.FirstOrDefault(m => m.Contains("HCMIS.Repository.Queries"));
+            //            if(queryLine == null)
+            //            {
+            //                throw new Exception();
+            //                outputResult = string.Format("{2}: Class {0} Method {1} \n", _baseCodeFile.Classes.First().Name, methodComparisonResult.BaseMethod.Name, "ERROR - Not Refactored");
+            //            }
+            //            var queryLineShortened = queryLine.Remove(0, queryLine.IndexOf("HCMIS.Repository.Queries"));
+            //            var queryWithoutParam = queryLineShortened.Trim().Split('(')[0];
+            //            //LoadFromRawSQL and the query on the same line.
 
-                        var className = queryWithoutParam.Split('.')[queryWithoutParam.Split('.').Length - 2];
-                        var queryFilePath = Path.Combine(QueriesDirectory, className + ".cs");
-                        _queryCodeFile = _codeFileService.Create(queryFilePath);
-                        var queryClass = _queryCodeFile.Classes.First();
-                        var method =
-                            queryClass.Methods.First(
-                                m => m.Name == queryWithoutParam.Split('.')[queryWithoutParam.Split('.').Length - 1]);
-                        var refactoredQuery = method.Body.Queries.First();
+            //            var className = queryWithoutParam.Split('.')[queryWithoutParam.Split('.').Length - 2];
+            //            var queryFilePath = Path.Combine(QueriesDirectory, className + ".cs");
+            //            _queryCodeFile = _codeFileService.Create(queryFilePath);
+            //            var queryClass = _queryCodeFile.Classes.First();
+            //            var method =
+            //                queryClass.Methods.First(
+            //                    m => m.Name == queryWithoutParam.Split('.')[queryWithoutParam.Split('.').Length - 1]);
+            //            var refactoredQuery = method.Body.Queries.First();
 
 
-                        string successResult =
-                            refactoredQuery.Equals(methodComparisonResult.BaseMethod.Body.Queries.First()) ? "SUCCESS" : "ERROR";
+            //            string successResult =
+            //                refactoredQuery.Equals(methodComparisonResult.BaseMethod.Body.Queries.First()) ? "SUCCESS" : "ERROR";
 
-                        outputResult = string.Format("{2}: Class {0} Method {1} \n", className, method, successResult);
-                    }
-                    catch (Exception)
-                    {
+            //            outputResult = string.Format("{2}: Class {0} Method {1} \n", className, method, successResult);
+            //        }
+            //        catch (Exception)
+            //        {
 
-                        outputResult = string.Format("{2}: Class {0} Method {1} \n", _baseCodeFile.Classes.First().Name, methodComparisonResult.BaseMethod.Name, "ERROR - Not Refactored");
-                    }
+            //            outputResult = string.Format("{2}: Class {0} Method {1} \n", _baseCodeFile.Classes.First().Name, methodComparisonResult.BaseMethod.Name, "ERROR - Not Refactored");
+            //        }
                     
-                }
+            //    }
 
-                var stream = _outputFile.AppendText();
-                stream.Write(outputResult);
-                stream.Close();
+            //    var stream = _outputFile.AppendText();
+            //    stream.Write(outputResult);
+            //    stream.Close();
 
-            }
+            //}
 
-            return result;
+            return null;
         }
 
         public void CompareDirectories()
         {
             _outputFile = new FileInfo(Path.Combine(OutputDirectory.FullName, "ComparisonResult.txt"));
-            
+            var errCount = 0;
 
             foreach (var csFile in DirectoryOriginal.CSharpFiles)
             {
                 File1 = csFile.FullName;
                 //The following is dirty hack.  Should be better.  Basically we're manually mapping the files between the two BLLs
                 File2 = File1.Replace("BLL Legacy", @"New\BLL");
-                Compare();
+                var baseClass = new CodeFileService();
+                var refactoredClass = new CodeFileService();
+
+                var baseCodeFile = baseClass.Create(File1);
+                var refactoredCodeFile = refactoredClass.Create(File2);
+                
+                if(baseCodeFile.Classes.Count == 0 || refactoredCodeFile.Classes.Count  == 0)
+                {
+                    continue;
+                }
+
+                var classComparisonViewModel = new ClassComparisonViewModel(
+                    baseCodeFile.Classes.First(), refactoredCodeFile.Classes.First(),
+                    QueriesDirectory);
+                classComparisonViewModel.Compare();
+
+                var methodComparisonResults = classComparisonViewModel.ComparisonResult.MethodComparisonResults;
+
+                foreach (var methodComparisonResultBase in methodComparisonResults)
+                {
+                    if (methodComparisonResultBase is MethodRefactorError || methodComparisonResultBase is OtherError)
+                    {
+                        errCount++;
+                        var stream = _outputFile.AppendText();
+                        var message = string.Format("{0}. {1} - {2} Result: {3} \n \n", errCount, csFile.FullName,
+                                                    methodComparisonResultBase.BaseMethod.Name,
+                                                    methodComparisonResultBase.Result);
+
+                        stream.Write(message);
+                        stream.Close();
+                    }
+                }
             }
         }
 

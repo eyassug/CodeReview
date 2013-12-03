@@ -8,6 +8,8 @@ namespace CodeReview.Services
 {
     public interface IClassComparerService
     {
-        ClassComparisonResult Compare(CSharpClass baseClass, CSharpClass refactoredClass);
+        ClassComparisonResult Compare(CSharpClass baseClass, CSharpClass refactoredClass,
+                                      string refactoredQueryDirectoryPath);
+
     }
 }

@@ -6,7 +6,7 @@ namespace CodeReview.Services
 {
     public class CodeDirectory
     {
-        private DirectoryInfo _codeDirectory;
+        private readonly DirectoryInfo _codeDirectory;
         private List<FileInfo> _cSharpFiles;
 
         public CodeDirectory(string directoryPath)

@@ -8,7 +8,8 @@ namespace CodeReview.Services.Comparison
 {
     public class MethodRefactorSuccess : MethodComparisonResultBase
     {
-        public MethodRefactorSuccess() : base("Successful!")
+        public MethodRefactorSuccess(Method baseMethod)
+            : base(baseMethod, "Successful!")
         {
             
         }

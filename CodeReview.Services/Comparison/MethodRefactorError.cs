@@ -8,8 +8,8 @@ namespace CodeReview.Services.Comparison
 {
     public class MethodRefactorError : MethodComparisonResultBase
     {
-        public MethodRefactorError()
-            : base("Refactor error")
+        public MethodRefactorError(Method baseMethod)
+            : base(baseMethod, "Refactor error")
         {
             
         }
